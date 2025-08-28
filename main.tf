@@ -18,7 +18,7 @@ terraform {
 ##################################################################################
 
 provider "aws" {
-  region = "us-east-1" # lo dejamos literal para no tocar variables.tf
+  region = var.aws_region
 }
 
 ##################################################################################
