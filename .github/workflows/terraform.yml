@@ -45,11 +45,14 @@ jobs:
       # tfsec usando Docker (no dependemos de action/tag)
       - name: Run tfsec (Docker)
         run: |
-          docker run --rm -v "${GITHUB_WORKSPACE}:/src" aquasec/tfsec:latest \
-            --format sarif --out /src/tfsec.sarif /src
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/src" \
+            aquasec/tfsec/tfsec:latest \
+            /src --format sarif --out /src/tfsec.sarif
         continue-on-error: true
 
       - name: Upload tfsec SARIF
+        if: always()   # intenta subir aunque tfsec falle
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: tfsec.sarif
