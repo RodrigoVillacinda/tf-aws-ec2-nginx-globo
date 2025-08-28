@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # para subir el SARIF de tfsec
+  security-events: write
   actions: read
 
 jobs:
@@ -42,11 +42,11 @@ jobs:
       - name: TFLint run
         run: tflint
 
-      - name: Setup tfsec
-        uses: aquasecurity/setup-tfsec@v1
-
-      - name: Run tfsec
-        run: tfsec --format sarif --out tfsec.sarif .
+      # tfsec usando Docker (no dependemos de action/tag)
+      - name: Run tfsec (Docker)
+        run: |
+          docker run --rm -v "${GITHUB_WORKSPACE}:/src" aquasec/tfsec:latest \
+            --format sarif --out /src/tfsec.sarif /src
         continue-on-error: true
 
       - name: Upload tfsec SARIF
