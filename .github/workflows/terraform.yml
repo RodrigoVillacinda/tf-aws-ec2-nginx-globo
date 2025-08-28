@@ -42,11 +42,11 @@ jobs:
       - name: TFLint run
         run: tflint
 
-      - name: tfsec scan
-        uses: aquasecurity/tfsec-action@v1
-        with:
-          format: sarif
-          output_file: tfsec.sarif
+      - name: Setup tfsec
+        uses: aquasecurity/setup-tfsec@v1
+
+      - name: Run tfsec
+        run: tfsec --format sarif --out tfsec.sarif .
         continue-on-error: true
 
       - name: Upload tfsec SARIF
