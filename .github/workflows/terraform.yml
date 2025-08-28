@@ -42,17 +42,15 @@ jobs:
       - name: TFLint run
         run: tflint
 
-      # tfsec usando Docker (no dependemos de action/tag)
-      - name: Run tfsec (Docker)
-        run: |
-          docker run --rm \
-            -v "${GITHUB_WORKSPACE}:/src" \
-            aquasec/tfsec/tfsec:latest \
-            /src --format sarif --out /src/tfsec.sarif
+      - name: tfsec scan
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          format: sarif
+          output_file: tfsec.sarif
         continue-on-error: true
 
       - name: Upload tfsec SARIF
-        if: always()   # intenta subir aunque tfsec falle
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: tfsec.sarif
