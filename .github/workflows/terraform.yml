@@ -42,15 +42,18 @@ jobs:
       - name: TFLint run
         run: tflint
 
-      - name: tfsec scan
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          format: sarif
-          output_file: tfsec.sarif
+      # tfsec usando Docker (imagen correcta)
+      - name: Run tfsec (Docker)
+        run: |
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/workspace" \
+            aquasec/tfsec:latest \
+            /workspace --format sarif --out /workspace/tfsec.sarif
         continue-on-error: true
 
+      # Sube el SARIF solo si existe
       - name: Upload tfsec SARIF
-        if: always()
+        if: ${{ always() && hashFiles('tfsec.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: tfsec.sarif
