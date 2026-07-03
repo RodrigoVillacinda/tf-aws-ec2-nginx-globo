@@ -48,7 +48,7 @@ resource "aws_internet_gateway" "app" {
 resource "aws_subnet" "public_subnet1" {
   cidr_block              = var.vpc_subnet_cidr
   vpc_id                  = aws_vpc.app.id
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.map_public_ip_on_launch
   tags                    = local.common_tags
 }
 
