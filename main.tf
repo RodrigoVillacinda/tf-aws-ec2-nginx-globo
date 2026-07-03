@@ -36,7 +36,7 @@ data "aws_ssm_parameter" "amzn2_linux" {
 # NETWORKING #
 resource "aws_vpc" "app" {
   cidr_block           = var.vpc_cidr_block
-  enable_dns_hostnames = var.enable_dns_hostnames
+  enable_dns_hostnames = var.vpc_enable_dns_hostnames
   tags                 = local.common_tags
 }
 
@@ -46,7 +46,7 @@ resource "aws_internet_gateway" "app" {
 }
 
 resource "aws_subnet" "public_subnet1" {
-  cidr_block              = var.vpc_public_subnet1_cidr_block
+  cidr_block              = var.vpc_subnet_cidr
   vpc_id                  = aws_vpc.app.id
   map_public_ip_on_launch = true
   tags                    = local.common_tags
@@ -77,8 +77,8 @@ resource "aws_security_group" "nginx_sg" {
 
   ingress {
     description = "HTTP access from anywhere"
-    from_port   = 80
-    to_port     = 80
+    from_port   = var.http_port
+    to_port     = var.http_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -94,7 +94,7 @@ resource "aws_security_group" "nginx_sg" {
 # INSTANCES #
 resource "aws_instance" "nginx1" {
   ami                         = nonsensitive(data.aws_ssm_parameter.amzn2_linux.value)
-  instance_type               = var.instance_type
+  instance_type               = var.ec2_instance_type
   subnet_id                   = aws_subnet.public_subnet1.id
   vpc_security_group_ids      = [aws_security_group.nginx_sg.id]
   user_data_replace_on_change = true
