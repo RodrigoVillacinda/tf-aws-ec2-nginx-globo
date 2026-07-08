@@ -38,18 +38,23 @@ variable "ec2_instance_type" {
   type        = string
 }
 
-variable "company" {
+variable "company_name" {
   type        = string
-  description = "Company name for resource tagging"
+  description = "The name of the company"
+  default     = "Globomantics"
 }
 
 variable "project" {
   type        = string
-  description = "Project name for resource tagging"
+  description = "The name of the project"
+}
+
+variable "environment" {
+  type        = string
+  description = "The environment for the deployment (e.g. dev, staging, prod)"
 }
 
 variable "billing_code" {
   type        = string
-  description = "Billing code for resource tagging"
-  default     = "GLB-001"
+  description = "Billing code for the project"
 }
